@@ -1,0 +1,23 @@
+/* Removed all old unused Vite/React default styles */
+
+/* Ensure the app layout spans the full height smoothly */
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* Custom selection styling */
+::selection {
+  background: rgba(167, 139, 250, 0.3);
+  color: #fff;
+}
+
+/* Hide scrollbar for elements where we want to keep scrolling but hide the visual bar (e.g. horizontal scroll sections) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

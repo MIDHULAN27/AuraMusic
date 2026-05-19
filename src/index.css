@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #A78BFA;
+  --color-secondary: #F472B6;
+  --color-accent: #3B82F6;
+  
+  /* Default (Light Mode) Variables - REFINED FOR VISIBILITY */
+  --color-background: #F8FAFC;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-glass-bg: rgba(255, 255, 255, 0.85); /* Increased opacity */
+  --color-glass-border: rgba(0, 0, 0, 0.08);
+  --glass-blur: 40px;
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --color-background: #070414;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #94A3B8;
+  --color-glass-bg: rgba(13, 10, 31, 0.85); /* Increased opacity */
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-text-primary transition-colors duration-300;
+  }
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.glass {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(var(--glass-blur, 40px)) saturate(180%); /* Increased blur */
+  border: 1px solid var(--color-glass-border);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Light mode specific card adjustments */
+:not(.dark) .glass-card {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.neon-glow {
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+}
+
+.text-glow {
+  text-shadow: 0 0 15px rgba(167, 139, 250, 0.4);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom transitions */
+.page-transition {
+  @apply transition-all duration-500 ease-in-out;
+}
