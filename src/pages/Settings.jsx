@@ -25,17 +25,17 @@ const Settings = () => {
   const { languages, toggleLanguage, audioQuality, setAudioQuality } = useSettingsStore();
 
   const renderSection = (title, icon, description, children) => (
-    <section className="space-y-6">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="p-3 rounded-2xl bg-primary/10 text-primary">
+    <section className="space-y-4 sm:space-y-6">
+      <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-8">
+        <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-primary/10 text-primary flex-shrink-0">
           {icon}
         </div>
         <div>
-          <h2 className="text-3xl font-black text-text-primary tracking-tight uppercase">{title}</h2>
-          <p className="text-text-secondary text-sm font-medium">{description}</p>
+          <h2 className="text-xl sm:text-3xl font-black text-text-primary tracking-tight uppercase">{title}</h2>
+          <p className="text-text-secondary text-xs sm:text-sm font-medium mt-0.5">{description}</p>
         </div>
       </div>
-      <div className="glass rounded-[3rem] p-8 border border-white/5 space-y-8">
+      <div className="glass rounded-2xl sm:rounded-[3rem] p-4 sm:p-8 border border-white/5 space-y-6 sm:space-y-8">
         {children}
       </div>
     </section>
@@ -45,11 +45,11 @@ const Settings = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8 pb-32 max-w-5xl mx-auto space-y-16"
+      className="p-4 sm:p-8 pb-32 max-w-5xl mx-auto space-y-10 sm:space-y-16"
     >
-      <div className="space-y-4">
-        <h1 className="text-7xl font-black tracking-tighter text-text-primary uppercase leading-none">Settings</h1>
-        <p className="text-text-secondary text-xl font-medium tracking-wide">Configure your cosmic experience</p>
+      <div className="space-y-2 sm:space-y-4">
+        <h1 className="text-4xl sm:text-7xl font-black tracking-tighter text-text-primary uppercase leading-none">Settings</h1>
+        <p className="text-text-secondary text-sm sm:text-xl font-medium tracking-wide">Configure your cosmic experience</p>
       </div>
 
       {renderSection(

@@ -91,17 +91,17 @@ const Home = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="p-8 pb-32"
+      className="p-4 sm:p-8 pb-32"
     >
-      <div className="flex items-center gap-3 mb-10 overflow-x-auto no-scrollbar pb-2">
-        <div className="flex items-center gap-2 px-4 py-2 glass rounded-full border border-primary/20 text-primary">
+      <div className="flex items-center gap-3 mb-6 md:mb-10 overflow-x-auto no-scrollbar pb-2">
+        <div className="flex items-center gap-2 px-4 py-2 glass rounded-full border border-primary/20 text-primary flex-shrink-0">
           <Globe size={16} />
           <span className="text-[10px] font-black uppercase tracking-widest">Global Rhythm</span>
         </div>
         {['All', 'Trending', 'Charts', 'New Releases'].map(tab => (
           <button
             key={tab}
-            className="px-6 py-2.5 rounded-full font-black text-xs uppercase tracking-widest transition-all glass text-text-secondary hover:text-text-primary border border-white/5"
+            className="px-6 py-2.5 rounded-full font-black text-xs uppercase tracking-widest transition-all glass text-text-secondary hover:text-text-primary border border-white/5 flex-shrink-0"
           >
             {tab}
           </button>
@@ -109,12 +109,12 @@ const Home = () => {
       </div>
 
       {loading && !heroItem ? (
-        <div className="w-full h-[550px] rounded-[3.5rem] bg-white/5 animate-pulse mb-20" />
+        <div className="w-full h-[300px] md:h-[450px] lg:h-[550px] rounded-[2rem] md:rounded-[3.5rem] bg-white/5 animate-pulse mb-10 md:mb-20" />
       ) : heroItem && (
         <motion.div 
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="relative w-full h-[550px] rounded-[3.5rem] overflow-hidden mb-20 group shadow-3xl border border-white/10"
+          className="relative w-full h-[300px] md:h-[450px] lg:h-[550px] rounded-[2rem] md:rounded-[3.5rem] overflow-hidden mb-10 md:mb-20 group shadow-3xl border border-white/10"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/20 to-transparent z-10" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent z-10" />
@@ -125,29 +125,29 @@ const Home = () => {
             className="w-full h-full object-cover transition-transform duration-[10s] group-hover:scale-110"
           />
           
-          <div className="absolute bottom-0 left-0 p-12 lg:p-24 z-20 max-w-5xl">
+          <div className="absolute bottom-0 left-0 p-6 sm:p-12 lg:p-24 z-20 max-w-5xl">
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 px-6 py-2.5 bg-primary/20 text-primary border border-primary/30 rounded-full mb-10 w-fit backdrop-blur-xl"
+              className="flex items-center gap-2 px-4 py-1.5 sm:px-6 sm:py-2.5 bg-primary/20 text-primary border border-primary/30 rounded-full mb-4 sm:mb-8 lg:mb-10 w-fit backdrop-blur-xl"
             >
-              <Zap size={16} fill="currentColor" />
-              <span className="text-[10px] font-black uppercase tracking-[0.3em]">Trending Now</span>
+              <Zap size={14} fill="currentColor" className="sm:w-4 sm:h-4" />
+              <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em]">Trending Now</span>
             </motion.div>
             <motion.h1 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-7xl lg:text-9xl font-black mb-10 text-text-primary tracking-tighter text-glow drop-shadow-2xl leading-[0.85]"
+              className="text-3xl sm:text-5xl md:text-7xl lg:text-9xl font-black mb-6 sm:mb-8 lg:mb-10 text-text-primary tracking-tighter text-glow drop-shadow-2xl leading-[0.9] sm:leading-[0.85]"
             >
               {heroItem.title}
             </motion.h1>
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-wrap gap-4 sm:gap-6">
               <button 
                 onClick={() => navigate(heroItem.type === 'song' ? `/album/${heroItem.albumId}` : `/${heroItem.type}/${heroItem.id}`)}
-                className="px-12 py-6 bg-primary text-white font-black rounded-[2rem] flex items-center gap-4 shadow-2xl hover:scale-105 transition-all neon-glow"
+                className="px-6 py-3.5 sm:px-12 sm:py-6 bg-primary text-white font-black rounded-xl sm:rounded-[2rem] flex items-center gap-2 sm:gap-4 shadow-2xl hover:scale-105 transition-all neon-glow"
               >
-                <Play fill="currentColor" size={28} className="ml-1" />
-                <span className="text-lg uppercase">Listen Now</span>
+                <Play fill="currentColor" size={20} className="sm:w-7 sm:h-7 ml-0.5" />
+                <span className="text-xs sm:text-lg uppercase">Listen Now</span>
               </button>
             </div>
           </div>

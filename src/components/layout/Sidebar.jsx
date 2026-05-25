@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Search, Library, Heart, Music, Disc, Plus, Settings } from 'lucide-react';
+import { Home, Search, Library, Heart, Music, Disc, Plus, Settings, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useUIStore } from '../../store/useUIStore';
 import Logo from '../ui/Logo';
 
-const Sidebar = () => {
+const Sidebar = ({ isMobile }) => {
   const location = useLocation();
-  const { setShowPlaylist } = useUIStore();
+  const { setShowPlaylist, setSidebarOpen } = useUIStore();
 
   const navLinks = [
     { name: 'Home', path: '/', icon: Home },
@@ -21,10 +21,24 @@ const Sidebar = () => {
     { name: 'Artists', path: '/artists', icon: Music },
   ];
 
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  };
+
   return (
-    <aside className="w-72 flex-shrink-0 h-full flex flex-col glass z-20 relative shadow-2xl border-r border-white/5 overflow-hidden">
-      <div className="p-10">
+    <aside className="w-full lg:w-72 flex-shrink-0 h-full flex flex-col glass z-20 relative shadow-2xl border-r border-white/5 overflow-hidden">
+      <div className="p-10 flex items-center justify-between">
         <Logo />
+        {isMobile && (
+          <button 
+            onClick={() => setSidebarOpen(false)}
+            className="p-2.5 rounded-full hover:bg-white/10 transition-all text-text-secondary hover:text-text-primary border border-white/5"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
 
       <nav className="flex-1 px-6 py-2 space-y-10 overflow-y-auto no-scrollbar">
@@ -39,6 +53,7 @@ const Sidebar = () => {
               <Link
                 key={link.name}
                 to={link.path}
+                onClick={handleLinkClick}
                 className={`relative flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group ${
                   isActive
                     ? 'text-text-primary font-bold bg-primary/10'
@@ -63,6 +78,7 @@ const Sidebar = () => {
               <Link
                 key={link.name}
                 to={link.path}
+                onClick={handleLinkClick}
                 className={`relative flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-300 group ${
                   isActive
                     ? 'text-text-primary font-bold bg-secondary/10'
@@ -79,7 +95,7 @@ const Sidebar = () => {
 
       <div className="p-6 mt-auto">
         <button 
-          onClick={() => setShowPlaylist(true)}
+          onClick={() => { setShowPlaylist(true); handleLinkClick(); }}
           className="w-full py-4 rounded-2xl bg-gradient-to-r from-primary to-secondary text-white font-black text-[15px] flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform duration-300 neon-glow hover:neon-glow-active shadow-xl"
         >
           <Plus size={20} />

@@ -103,17 +103,17 @@ const Search = () => {
   const renderResultSection = (title, items, type, icon) => {
     if (!items || items.length === 0) return null;
     return (
-      <div className="mb-20">
-        <div className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-5">
-            <div className="p-4 rounded-3xl bg-primary/10 text-primary border border-primary/20">
+      <div className="mb-12 md:mb-20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 md:mb-10">
+          <div className="flex items-center gap-3 md:gap-5">
+            <div className="p-3 md:p-4 rounded-2xl md:rounded-3xl bg-primary/10 text-primary border border-primary/20 flex-shrink-0">
               {icon}
             </div>
-            <h2 className="text-4xl font-black text-text-primary tracking-tighter uppercase">{title}</h2>
+            <h2 className="text-2xl md:text-4xl font-black text-text-primary tracking-tighter uppercase">{title}</h2>
           </div>
-          <span className="text-[10px] font-black text-text-secondary uppercase tracking-[0.3em]">{items.length} Cosmic Matches</span>
+          <span className="text-[9px] md:text-[10px] font-black text-text-secondary uppercase tracking-[0.3em] pl-1">{items.length} Cosmic Matches</span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-8">
           {items.map((item, i) => (
             <motion.div
               key={(item?.id || i) + i}
@@ -140,19 +140,19 @@ const Search = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="max-w-7xl mx-auto space-y-16 pb-40 pt-12 px-6 md:px-10"
+      className="max-w-7xl mx-auto space-y-8 md:space-y-16 pb-40 pt-4 md:pt-12 px-4 md:px-10"
     >
       <div className="relative max-w-4xl mx-auto z-50" ref={searchRef}>
-        <div className="absolute inset-0 bg-primary/10 rounded-[3.5rem] blur-3xl opacity-0 group-focus-within:opacity-100 transition-all duration-1000" />
-        <div className="relative glass rounded-[3.5rem] flex items-center p-4 pl-10 pr-6 border border-white/10 group-focus-within:border-primary/50 shadow-3xl transition-all">
-          <SearchIcon className="text-text-secondary group-focus-within:text-primary transition-colors" size={32} />
+        <div className="absolute inset-0 bg-primary/10 rounded-2xl md:rounded-[3.5rem] blur-3xl opacity-0 group-focus-within:opacity-100 transition-all duration-1000" />
+        <div className="relative glass rounded-2xl md:rounded-[3.5rem] flex items-center p-2 md:p-4 pl-4 md:pl-10 pr-4 md:pr-6 border border-white/10 group-focus-within:border-primary/50 shadow-3xl transition-all">
+          <SearchIcon className="text-text-secondary group-focus-within:text-primary transition-colors flex-shrink-0" size={20} className="md:w-8 md:h-8" />
           <input
             type="text"
             value={query}
             onFocus={() => setShowSuggestions(true)}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search artists, songs, albums..."
-            className="w-full bg-transparent border-none py-6 px-8 text-3xl font-black text-text-primary placeholder:text-text-secondary/20 focus:outline-none"
+            placeholder="Search artists, songs..."
+            className="w-full bg-transparent border-none py-3 px-4 md:py-6 md:px-8 text-lg md:text-3xl font-black text-text-primary placeholder:text-text-secondary/20 focus:outline-none"
           />
           <AnimatePresence>
             {query && (
@@ -176,9 +176,9 @@ const Search = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 10 }}
               exit={{ opacity: 0, y: -20 }}
-              className="absolute top-full left-0 right-0 glass rounded-[2.5rem] border border-white/10 p-6 shadow-3xl z-50"
+              className="absolute top-full left-0 right-0 glass rounded-2xl md:rounded-[2.5rem] border border-white/10 p-4 md:p-6 shadow-3xl z-50"
             >
-              <div className="flex items-center gap-3 mb-6 ml-4">
+              <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6 ml-2 md:ml-4">
                 <History size={16} className="text-primary" />
                 <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-text-secondary">Recent Journeys</h3>
               </div>
@@ -219,13 +219,13 @@ const Search = () => {
       </div>
 
       {!query ? (
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-10 lg:gap-20">
           <section>
-            <div className="flex items-center gap-4 mb-12">
-               <div className="w-1.5 h-10 bg-primary rounded-full" />
-               <h2 className="text-4xl font-black text-text-primary tracking-tighter uppercase">Explore Galaxies</h2>
+            <div className="flex items-center gap-4 mb-8 md:mb-12">
+               <div className="w-1.5 h-8 md:h-10 bg-primary rounded-full" />
+               <h2 className="text-2xl md:text-4xl font-black text-text-primary tracking-tighter uppercase">Explore Galaxies</h2>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-8">
               {[
                 { name: 'K-Pop', color: 'from-pink-500 to-rose-600', icon: '✨' },
                 { name: 'Phonk', color: 'from-zinc-700 to-black', icon: '💀' },
@@ -238,20 +238,20 @@ const Search = () => {
                   key={genre.name}
                   whileHover={{ scale: 1.05, y: -10 }}
                   onClick={() => setQuery(genre.name)}
-                  className={`relative h-48 rounded-[3rem] bg-gradient-to-br ${genre.color} p-8 overflow-hidden cursor-pointer shadow-2xl group flex items-center justify-center`}
+                  className={`relative h-28 sm:h-48 rounded-2xl sm:rounded-[3rem] bg-gradient-to-br ${genre.color} p-4 sm:p-8 overflow-hidden cursor-pointer shadow-2xl group flex items-center justify-center`}
                 >
-                  <div className="absolute top-4 right-6 text-4xl opacity-20 group-hover:opacity-40 transition-opacity transform group-hover:rotate-12">{genre.icon}</div>
-                  <h3 className="text-3xl font-black text-white z-10 relative tracking-tighter uppercase">{genre.name}</h3>
+                  <div className="absolute top-2 right-4 sm:top-4 sm:right-6 text-2xl sm:text-4xl opacity-20 group-hover:opacity-40 transition-opacity transform group-hover:rotate-12">{genre.icon}</div>
+                  <h3 className="text-lg sm:text-3xl font-black text-white z-10 relative tracking-tighter uppercase">{genre.name}</h3>
                 </motion.div>
               ))}
             </div>
           </section>
 
-          <aside className="space-y-16">
-            <section className="glass rounded-[3rem] p-10 border border-white/10">
-               <div className="flex items-center gap-4 mb-10">
-                  <TrendingUp className="text-secondary" size={28} />
-                  <h2 className="text-2xl font-black text-text-primary tracking-tight uppercase">Trending Tags</h2>
+          <aside className="space-y-8 md:space-y-16">
+            <section className="glass rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 border border-white/10">
+               <div className="flex items-center gap-4 mb-6 md:mb-10">
+                  <TrendingUp className="text-secondary" size={24} className="md:w-7 md:h-7" />
+                  <h2 className="text-xl md:text-2xl font-black text-text-primary tracking-tight uppercase">Trending Tags</h2>
                </div>
                <div className="flex flex-wrap gap-3">
                   {['Latest Releases', 'Global Top 50', 'Viral Phonk', 'Aura Chill', 'Night Drive', 'Hardstyle'].map(tag => (
@@ -266,7 +266,7 @@ const Search = () => {
       ) : (
         <section className="space-y-20">
           {isSearching ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-8">
               {Array(12).fill(0).map((_, i) => <CardSkeleton key={i} />)}
             </div>
           ) : (

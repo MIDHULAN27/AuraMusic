@@ -6,6 +6,9 @@ export const useUIStore = create(
     (set) => ({
       isDarkMode: true,
       sidebarCollapsed: false,
+      isSidebarOpen: false,
+      
+      setSidebarOpen: (val) => set({ isSidebarOpen: val }),
       
       toggleTheme: () => set((state) => {
         const newMode = !state.isDarkMode;

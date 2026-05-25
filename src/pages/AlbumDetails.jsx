@@ -88,7 +88,7 @@ const AlbumDetails = () => {
       className="pb-24"
     >
       {/* Header */}
-      <div className="relative -mx-10 -mt-10 px-10 pt-24 pb-16 mb-12 overflow-hidden rounded-b-[4rem] border-b border-white/10 min-h-[500px] flex items-end">
+      <div className="relative -mx-4 md:-mx-10 -mt-4 md:-mt-10 px-4 md:px-10 pt-24 pb-10 md:pb-16 mb-8 md:mb-12 overflow-hidden rounded-b-3xl md:rounded-b-[4rem] border-b border-white/10 min-h-[350px] md:min-h-[500px] flex items-end">
         {data?.image && (
           <div 
             className="absolute inset-0 z-0 blur-[100px] opacity-40 scale-125"
@@ -99,32 +99,32 @@ const AlbumDetails = () => {
         
         <button 
           onClick={() => navigate(-1)}
-          className="absolute top-12 left-12 p-4 rounded-full glass hover:bg-white/10 transition-all z-20 group"
+          className="absolute top-6 left-6 md:top-12 md:left-12 p-3 md:p-4 rounded-full glass hover:bg-white/10 transition-all z-20 group"
         >
           <ArrowLeft className="text-text-primary group-hover:-translate-x-1 transition-transform" />
         </button>
 
-        <div className="relative z-10 flex flex-col md:flex-row gap-12 items-end w-full">
+        <div className="relative z-10 flex flex-col md:flex-row gap-6 md:gap-12 items-center md:items-end w-full text-center md:text-left">
           <motion.div 
             initial={{ scale: 0.8, opacity: 0, y: 50 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            className="w-64 h-64 lg:w-80 lg:h-80 flex-shrink-0 rounded-[3rem] overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.6)] border border-white/10 group bg-white/5"
+            className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 flex-shrink-0 rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.6)] border border-white/10 group bg-white/5 mx-auto md:mx-0"
           >
             {data?.image && <img src={data.image} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />}
           </motion.div>
 
-          <div className="flex flex-col gap-4 pb-4 flex-1 min-w-0">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-2 md:gap-4 pb-4 flex-1 min-w-0 w-full">
+            <div className="flex items-center justify-center md:justify-start gap-3">
               <span className="px-3 py-1 rounded-full bg-primary text-[10px] font-black uppercase tracking-widest text-white">
                 {data?.type || 'COLLECTION'}
               </span>
             </div>
             
-            <h1 className="text-5xl lg:text-8xl font-black text-text-primary tracking-tighter text-glow leading-[0.9] truncate py-2">
+            <h1 className="text-3xl sm:text-5xl lg:text-8xl font-black text-text-primary tracking-tighter text-glow leading-[1] md:leading-[0.9] truncate py-1 md:py-2">
               {data?.title || 'Unknown Title'}
             </h1>
             
-            <div className="flex flex-wrap items-center gap-6 text-lg font-bold text-text-secondary mt-2">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-6 text-sm sm:text-lg font-bold text-text-secondary mt-1 md:mt-2">
               <span className="text-text-primary">{data?.subtitle || ''}</span>
               {data?.year && (
                 <>
@@ -139,37 +139,37 @@ const AlbumDetails = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-10">
         {/* Actions */}
-        <div className="flex items-center gap-8 mb-16 pl-2">
+        <div className="flex items-center gap-4 md:gap-8 mb-8 md:mb-16 pl-2">
           <motion.button 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handlePlayAll}
-            className="px-10 h-20 bg-primary text-white rounded-[2rem] flex items-center gap-4 shadow-xl hover:shadow-2xl transition-all group"
+            className="px-6 h-16 sm:px-10 sm:h-20 bg-primary text-white rounded-2xl sm:rounded-[2rem] flex items-center gap-3 sm:gap-4 shadow-xl hover:shadow-2xl transition-all group"
           >
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-               <Play fill="white" size={24} className="ml-1" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+               <Play fill="white" size={20} className="ml-0.5 sm:w-6 sm:h-6" />
             </div>
-            <span className="text-xl font-black uppercase tracking-widest">Play All</span>
+            <span className="text-sm sm:text-xl font-black uppercase tracking-widest">Play All</span>
           </motion.button>
           
           <button 
             onClick={() => toggleFavorite(data)}
-            className={`p-6 rounded-[2rem] glass transition-all ${isFav ? 'text-primary scale-110' : 'text-text-secondary hover:text-text-primary border border-white/5'}`}
+            className={`p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] glass transition-all ${isFav ? 'text-primary scale-110' : 'text-text-secondary hover:text-text-primary border border-white/5'}`}
           >
-            <Heart size={28} fill={isFav ? "currentColor" : "none"} />
+            <Heart size={20} className="sm:w-7 sm:h-7" fill={isFav ? "currentColor" : "none"} />
           </button>
         </div>
 
         {/* Tracklist */}
-        <div className="glass rounded-[3rem] p-1 border border-white/5 shadow-2xl overflow-hidden">
+        <div className="glass rounded-[2rem] md:rounded-[3rem] p-1 border border-white/5 shadow-2xl overflow-hidden">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="text-[11px] font-black uppercase tracking-[0.3em] text-text-secondary/60 border-b border-white/5">
-                <th className="px-10 py-8 text-center w-24">#</th>
-                <th className="py-8">Title</th>
-                <th className="py-8 text-right px-12 w-32"><Clock size={18} className="ml-auto" /></th>
+              <tr className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.3em] text-text-secondary/60 border-b border-white/5">
+                <th className="px-4 sm:px-10 py-6 sm:py-8 text-center w-12 sm:w-24">#</th>
+                <th className="py-6 sm:py-8">Title</th>
+                <th className="py-6 sm:py-8 text-right px-4 sm:px-12 w-20 sm:w-32"><Clock size={16} className="ml-auto sm:w-[18px] sm:h-[18px]" /></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -181,16 +181,16 @@ const AlbumDetails = () => {
                     onClick={() => handlePlayTrack(track, idx)}
                     className={`group cursor-pointer transition-all duration-300 ${isCurrent ? 'bg-primary/10' : 'hover:bg-white/5'}`}
                   >
-                    <td className="px-10 py-6 text-center">
-                      <span className={`text-lg font-black ${isCurrent ? 'text-primary' : 'text-text-secondary'}`}>{idx + 1}</span>
+                    <td className="px-4 sm:px-10 py-4 sm:py-6 text-center">
+                      <span className={`text-sm sm:text-lg font-black ${isCurrent ? 'text-primary' : 'text-text-secondary'}`}>{idx + 1}</span>
                     </td>
-                    <td className="py-6">
+                    <td className="py-4 sm:py-6">
                       <div className="flex flex-col truncate">
-                        <span className={`text-lg font-black truncate ${isCurrent ? 'text-primary' : 'text-text-primary'}`}>{track?.title || 'Unknown Title'}</span>
-                        <span className="text-sm font-bold text-text-secondary truncate">{track?.subtitle || ''}</span>
+                        <span className={`text-sm sm:text-lg font-black truncate ${isCurrent ? 'text-primary' : 'text-text-primary'}`}>{track?.title || 'Unknown Title'}</span>
+                        <span className="text-xs sm:text-sm font-bold text-text-secondary truncate">{track?.subtitle || ''}</span>
                       </div>
                     </td>
-                    <td className="py-6 text-right px-12 text-sm font-black text-text-secondary">
+                    <td className="py-4 sm:py-6 text-right px-4 sm:px-12 text-xs sm:text-sm font-black text-text-secondary">
                       {formatDuration(track?.duration || 0)}
                     </td>
                   </motion.tr>

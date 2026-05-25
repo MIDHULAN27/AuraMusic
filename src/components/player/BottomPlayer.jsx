@@ -135,11 +135,11 @@ const BottomPlayer = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-8 left-8 md:left-[304px] right-8 h-24 glass rounded-[2.5rem] border border-white/10 px-8 flex items-center justify-between z-50 shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
+            className="fixed bottom-4 lg:bottom-8 left-4 lg:left-[304px] right-4 lg:right-8 h-20 lg:h-24 glass rounded-2xl lg:rounded-[2.5rem] border border-white/10 px-4 lg:px-8 flex items-center justify-between z-50 shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
           >
             {/* Progress Bar */}
             <div 
-              className="absolute -top-1 left-8 right-8 h-1.5 bg-white/5 rounded-full cursor-pointer group"
+              className="absolute -top-1 left-4 lg:left-8 right-4 lg:right-8 h-1.5 bg-white/5 rounded-full cursor-pointer group"
               onClick={handleSeek}
             >
               <motion.div 
@@ -151,34 +151,34 @@ const BottomPlayer = () => {
             </div>
 
             {/* Info */}
-            <div className="flex items-center gap-4 w-[30%] min-w-[150px]">
+            <div className="flex items-center gap-2 lg:gap-4 w-[40%] md:w-[30%] min-w-[110px] md:min-w-[150px]">
               <motion.div 
                 onClick={() => setShowFullscreen(true)}
                 whileHover={{ scale: 1.05 }}
-                className="relative w-12 h-12 md:w-16 md:h-16 rounded-2xl overflow-hidden shadow-2xl cursor-pointer group flex-shrink-0"
+                className="relative w-10 h-10 lg:w-16 lg:h-16 rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl cursor-pointer group flex-shrink-0"
               >
                 <img src={currentTrack.image} alt="" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
-                   <Maximize2 size={20} className="text-white" />
+                   <Maximize2 size={16} className="text-white lg:w-5 lg:h-5" />
                 </div>
               </motion.div>
               
               <div className="flex flex-col truncate">
-                <span className="text-sm md:text-base font-black text-text-primary truncate">{currentTrack.title}</span>
-                <span className="text-[10px] md:text-xs text-text-secondary truncate mt-0.5">{currentTrack.subtitle}</span>
+                <span className="text-xs lg:text-base font-black text-text-primary truncate">{currentTrack.title}</span>
+                <span className="text-[9px] lg:text-xs text-text-secondary truncate mt-0.5">{currentTrack.subtitle}</span>
               </div>
 
               <button 
                 onClick={() => toggleFavorite(currentTrack)}
-                className={`p-2 transition-colors hidden sm:block ${isFav ? 'text-primary' : 'text-text-secondary hover:text-text-primary'}`}
+                className={`p-1.5 transition-colors hidden sm:block ${isFav ? 'text-primary' : 'text-text-secondary hover:text-text-primary'}`}
               >
-                <Heart size={20} fill={isFav ? "currentColor" : "none"} />
+                <Heart size={18} fill={isFav ? "currentColor" : "none"} />
               </button>
             </div>
 
             {/* Controls */}
-            <div className="flex flex-col items-center flex-1 max-w-md">
-              <div className="flex items-center gap-4 md:gap-8">
+            <div className="flex flex-col items-center flex-1 md:flex-initial max-w-md">
+              <div className="flex items-center gap-3 lg:gap-8">
                 <button 
                   onClick={() => setIsShuffled(!isShuffled)}
                   className={`transition-colors hidden sm:block ${isShuffled ? 'text-primary' : 'text-text-secondary hover:text-text-primary'}`}
@@ -186,21 +186,21 @@ const BottomPlayer = () => {
                   <Shuffle size={18} />
                 </button>
                 
-                <button onClick={playPrevious} className="text-text-primary hover:text-primary transition-all active:scale-90">
-                  <SkipBack size={22} fill="currentColor" />
+                <button onClick={playPrevious} className="text-text-primary hover:text-primary transition-all active:scale-90 p-1">
+                  <SkipBack size={20} fill="currentColor" className="lg:w-[22px] lg:h-[22px]" />
                 </button>
 
                 <motion.button 
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={togglePlay}
-                  className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-tr from-primary to-secondary rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(167,139,250,0.5)]"
+                  className="w-10 h-10 lg:w-14 lg:h-14 bg-gradient-to-tr from-primary to-secondary rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(167,139,250,0.5)]"
                 >
-                  {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-1" />}
+                  {isPlaying ? <Pause size={18} fill="currentColor" className="lg:w-6 lg:h-6" /> : <Play size={18} fill="currentColor" className="lg:w-6 lg:h-6 ml-0.5" />}
                 </motion.button>
 
-                <button onClick={playNext} className="text-text-primary hover:text-primary transition-all active:scale-90">
-                  <SkipForward size={22} fill="currentColor" />
+                <button onClick={playNext} className="text-text-primary hover:text-primary transition-all active:scale-90 p-1">
+                  <SkipForward size={20} fill="currentColor" className="lg:w-[22px] lg:h-[22px]" />
                 </button>
 
                 <button 
@@ -214,7 +214,7 @@ const BottomPlayer = () => {
             </div>
 
             {/* Right Controls */}
-            <div className="flex items-center justify-end gap-3 md:gap-6 w-[30%]">
+            <div className="flex items-center justify-end gap-2 lg:gap-6 w-[20%] md:w-[30%]">
               <button 
                 onClick={() => setIsQueueOpen(!isQueueOpen)}
                 className={`p-2 transition-all hidden md:block ${isQueueOpen ? 'text-primary' : 'text-text-secondary hover:text-text-primary'}`}
@@ -238,9 +238,9 @@ const BottomPlayer = () => {
 
               <button 
                 onClick={() => setShowFullscreen(true)}
-                className="text-text-secondary hover:text-text-primary"
+                className="text-text-secondary hover:text-text-primary p-2 hover:bg-white/5 rounded-full transition-all"
               >
-                <Maximize2 size={20} />
+                <Maximize2 size={18} className="lg:w-5 lg:h-5" />
               </button>
             </div>
           </motion.div>
@@ -372,7 +372,7 @@ const BottomPlayer = () => {
                         
                         <div className="flex items-center gap-6 md:gap-12">
                            <button onClick={playPrevious} className="text-text-primary hover:text-primary transition-all active:scale-90">
-                              <SkipBack size={36} md:size={48} fill="currentColor" />
+                              <SkipBack size={36} className="md:w-12 md:h-12" fill="currentColor" />
                            </button>
                            <motion.button 
                               whileHover={{ scale: 1.1 }}
@@ -380,10 +380,10 @@ const BottomPlayer = () => {
                               onClick={togglePlay}
                               className="w-20 h-20 md:w-28 md:h-28 bg-primary text-white rounded-full flex items-center justify-center shadow-3xl hover:shadow-primary/50 transition-all"
                            >
-                              {isPlaying ? <Pause size={36} md:size={48} fill="currentColor" /> : <Play size={36} md:size={48} fill="currentColor" className="ml-1" />}
+                              {isPlaying ? <Pause size={36} className="md:w-12 md:h-12" fill="currentColor" /> : <Play size={36} className="md:w-12 md:h-12 ml-1" fill="currentColor" />}
                            </motion.button>
                            <button onClick={playNext} className="text-text-primary hover:text-primary transition-all active:scale-90">
-                              <SkipForward size={36} md:size={48} fill="currentColor" />
+                              <SkipForward size={36} className="md:w-12 md:h-12" fill="currentColor" />
                            </button>
                         </div>
 
@@ -397,7 +397,7 @@ const BottomPlayer = () => {
                      <div className="flex items-center justify-between pt-6 md:pt-8 border-t border-white/10 px-2 md:px-0">
                         <div className="flex items-center gap-4 md:gap-6 w-1/3">
                            <button onClick={() => setVolume(volume === 0 ? 80 : 0)} className="text-text-secondary hover:text-text-primary">
-                              {volume === 0 ? <Volume size={20} md:size={24} /> : <Volume2 size={20} md:size={24} />}
+                              {volume === 0 ? <Volume size={20} className="md:w-6 md:h-6" /> : <Volume2 size={20} className="md:w-6 md:h-6" />}
                            </button>
                            <input 
                               type="range"
@@ -411,10 +411,10 @@ const BottomPlayer = () => {
                         
                         <div className="flex items-center gap-4 md:gap-8">
                            <button onClick={() => toggleFavorite(currentTrack)} className={`p-2 transition-all ${isFav ? 'text-primary' : 'text-text-secondary hover:text-text-primary'}`}>
-                              <Heart size={24} md:size={32} fill={isFav ? "currentColor" : "none"} />
+                              <Heart size={24} className="md:w-8 md:h-8" fill={isFav ? "currentColor" : "none"} />
                            </button>
                            <button onClick={() => setIsQueueOpen(!isQueueOpen)} className={`p-2 transition-all ${isQueueOpen ? 'text-primary' : 'text-text-secondary hover:text-text-primary'}`}>
-                              <ListMusic size={24} md:size={32} />
+                              <ListMusic size={24} className="md:w-8 md:h-8" />
                            </button>
                            <button className="text-text-secondary hover:text-text-primary p-2 hidden md:block"><Mic size={24} /></button>
                            <button className="text-text-secondary hover:text-text-primary p-2 hidden md:block"><Share2 size={24} /></button>

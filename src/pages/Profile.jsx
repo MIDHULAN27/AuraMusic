@@ -36,16 +36,16 @@ const Profile = () => {
   };
 
   return (
-    <div className="p-8 pb-32 max-w-7xl mx-auto space-y-12">
+    <div className="p-4 sm:p-8 pb-32 max-w-7xl mx-auto space-y-8 md:space-y-12">
       <section className="relative group">
         <div className="absolute inset-0 bg-primary/10 blur-3xl opacity-50 rounded-[3rem]" />
-        <div className="relative glass rounded-[3rem] p-10 flex flex-col md:flex-row items-center gap-10 border border-white/10">
+        <div className="relative glass rounded-3xl md:rounded-[3rem] p-6 sm:p-10 flex flex-col md:flex-row items-center gap-6 sm:gap-10 border border-white/10">
           <div className="relative group/avatar">
-            <div className="w-48 h-48 rounded-full bg-gradient-to-tr from-primary to-accent p-1 shadow-2xl relative overflow-hidden">
+            <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-tr from-primary to-accent p-1 shadow-2xl relative overflow-hidden">
               <img src={imagePreview || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop"} alt="" className="w-full h-full object-cover rounded-full" />
               {isEditing && (
                 <label className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center cursor-pointer opacity-0 group-hover/avatar:opacity-100 transition-opacity">
-                  <Camera size={32} className="text-white mb-2" />
+                  <Camera size={24} className="text-white mb-2 md:w-8 md:h-8" />
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                 </label>
               )}
@@ -54,18 +54,18 @@ const Profile = () => {
 
           <div className="flex-1 text-center md:text-left space-y-4">
             <div>
-              <h1 className="text-6xl font-black tracking-tighter text-text-primary mb-2 uppercase">Cosmic Explorer</h1>
-              <p className="text-xl text-text-secondary font-medium flex items-center justify-center md:justify-start gap-2">
-                <Mail size={18} /> explorer@auramusic.io
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tighter text-text-primary mb-2 uppercase">Cosmic Explorer</h1>
+              <p className="text-sm sm:text-xl text-text-secondary font-medium flex items-center justify-center md:justify-start gap-2">
+                <Mail size={16} className="sm:w-[18px] sm:h-[18px]" /> explorer@auramusic.io
               </p>
             </div>
             
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-4">
-              <button onClick={() => setIsEditing(!isEditing)} className="px-8 py-3 glass text-text-primary font-black rounded-full border border-white/10 hover:bg-white/5 transition-all flex items-center gap-2">
-                <Edit3 size={18} /> {isEditing ? 'SAVE PROFILE' : 'EDIT PROFILE'}
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-4 pt-2">
+              <button onClick={() => setIsEditing(!isEditing)} className="px-6 py-2.5 sm:px-8 sm:py-3 glass text-text-primary font-black rounded-full border border-white/10 hover:bg-white/5 transition-all flex items-center gap-2 text-xs sm:text-sm">
+                <Edit3 size={16} /> {isEditing ? 'SAVE PROFILE' : 'EDIT PROFILE'}
               </button>
-              <button onClick={() => toast.success('Logged out successfully')} className="px-8 py-3 bg-red-500/10 text-red-500 font-black rounded-full hover:bg-red-500 hover:text-white transition-all flex items-center gap-2">
-                <LogOut size={18} /> LOGOUT
+              <button onClick={() => toast.success('Logged out successfully')} className="px-6 py-2.5 sm:px-8 sm:py-3 bg-red-500/10 text-red-500 font-black rounded-full hover:bg-red-500 hover:text-white transition-all flex items-center gap-2 text-xs sm:text-sm">
+                <LogOut size={16} /> LOGOUT
               </button>
             </div>
           </div>
