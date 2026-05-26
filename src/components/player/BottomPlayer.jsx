@@ -118,7 +118,7 @@ const BottomPlayer = () => {
                 setShowFullscreen(true);
               }
             }}
-            className="fixed bottom-4 lg:bottom-8 left-4 lg:left-[304px] right-4 lg:right-8 h-20 lg:h-24 glass rounded-2xl lg:rounded-[2.5rem] border border-white/10 px-4 lg:px-8 flex items-center justify-between z-50 shadow-[0_30px_60px_rgba(0,0,0,0.8)] cursor-pointer"
+            className="fixed bottom-4 lg:bottom-8 left-4 lg:left-[304px] right-4 lg:right-8 h-20 lg:h-24 glass rounded-2xl lg:rounded-[2.5rem] border border-white/10 px-4 lg:px-8 flex items-center justify-between z-40 shadow-[0_30px_60px_rgba(0,0,0,0.8)] cursor-pointer"
           >
             {/* Progress Bar */}
             <div 
@@ -237,7 +237,7 @@ const BottomPlayer = () => {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            className="fixed inset-0 z-[9999] bg-background flex flex-col p-4 sm:p-6 md:p-12 overflow-hidden"
+            className="fixed inset-0 z-[200] bg-background flex flex-col p-4 sm:p-6 md:p-12 overflow-hidden"
           >
             {/* Background Ambient */}
             <div 
@@ -264,7 +264,7 @@ const BottomPlayer = () => {
                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
                        animate={{ opacity: 1, y: 0, scale: 1 }}
                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                       className="absolute right-0 mt-2 w-48 glass rounded-2xl border border-white/10 overflow-hidden shadow-2xl z-50 flex flex-col bg-background/90 backdrop-blur-xl"
+                       className="absolute right-0 mt-2 w-48 glass rounded-2xl border border-white/10 overflow-hidden shadow-2xl z-[210] flex flex-col bg-background/90 backdrop-blur-xl"
                      >
                         <button onClick={() => { toggleFavorite(currentTrack); setShowOptions(false); }} className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-text-primary hover:bg-white/10 transition-colors">
                            <Heart size={16} fill={isFav ? "currentColor" : "none"} className={isFav ? "text-primary" : ""} />
@@ -417,7 +417,7 @@ const BottomPlayer = () => {
             initial={{ opacity: 0, x: 300 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 300 }}
-            className={`fixed ${showFullscreen ? 'top-32 right-12 bottom-32 w-96' : 'bottom-36 right-8 h-[500px] w-80'} glass rounded-[2.5rem] border border-white/20 z-[10000] flex flex-col overflow-hidden shadow-3xl`}
+            className={`fixed ${showFullscreen ? 'top-32 right-12 bottom-32 w-96' : 'bottom-36 right-8 h-[500px] w-80'} glass rounded-[2.5rem] border border-white/20 z-[250] flex flex-col overflow-hidden shadow-3xl`}
           >
             <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
               <h3 className="font-black text-text-primary uppercase tracking-widest text-[11px]">Up Next</h3>

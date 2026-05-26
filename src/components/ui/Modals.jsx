@@ -1,13 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Play, Shuffle, Heart, Plus, Trash2, Edit2, Upload, LogOut, Check, LogIn, UserPlus } from 'lucide-react';
+import { X, Play, Shuffle, Heart, Plus, Trash2, Edit2, Upload, LogOut, Check, LogIn, UserPlus, Disc } from 'lucide-react';
 import { useState } from 'react';
 import { useUIStore } from '../../store/useUIStore';
 import { usePlayerStore } from '../../store/usePlayerStore';
 import { useFavoritesStore } from '../../store/useFavoritesStore';
 
 export const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
-  if (!isOpen) return null;
-
   const sizes = {
     sm: 'max-w-md',
     md: 'max-w-2xl',
@@ -18,31 +16,33 @@ export const Modal = ({ isOpen, onClose, title, children, size = 'md' }) => {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8 overflow-hidden">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="absolute inset-0 bg-black/80 backdrop-blur-2xl"
-        />
-        <motion.div
-          initial={{ scale: 0.95, opacity: 0, y: 30 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 30 }}
-          className={`${sizes[size]} w-full glass rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh] border border-white/20 mx-auto z-10`}
-        >
-          <div className="flex items-center justify-between p-6 md:p-8 border-b border-white/10 bg-white/5 flex-shrink-0">
-            <h2 className="text-xl md:text-2xl font-black text-text-primary tracking-tighter truncate mr-4 uppercase">{title}</h2>
-            <button onClick={onClose} className="p-3 rounded-full bg-white/5 hover:bg-primary/20 text-text-secondary hover:text-primary transition-all flex-shrink-0 border border-white/5">
-              <X size={24} />
-            </button>
-          </div>
-          <div className="flex-1 overflow-y-auto p-6 md:p-10 no-scrollbar scroll-smooth">
-            {children}
-          </div>
-        </motion.div>
-      </div>
+      {isOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/80 backdrop-blur-2xl"
+          />
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 30 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 30 }}
+            className={`${sizes[size]} w-full glass rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh] border border-white/20 mx-auto z-10`}
+          >
+            <div className="flex items-center justify-between p-6 md:p-8 border-b border-white/10 bg-white/5 flex-shrink-0">
+              <h2 className="text-xl md:text-2xl font-black text-text-primary tracking-tighter truncate mr-4 uppercase">{title}</h2>
+              <button onClick={onClose} className="p-3 rounded-full bg-white/5 hover:bg-primary/20 text-text-secondary hover:text-primary transition-all flex-shrink-0 border border-white/5">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 md:p-10 no-scrollbar scroll-smooth">
+              {children}
+            </div>
+          </motion.div>
+        </div>
+      )}
     </AnimatePresence>
   );
 };
@@ -108,100 +108,107 @@ export const PlaylistModal = ({ isOpen, onClose, playlist = null }) => {
   const [formData, setFormData] = useState(playlist || { name: '', description: '', image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=500&h=500&fit=crop' });
   const [selectedSongs, setSelectedSongs] = useState([]);
 
-  if (!isOpen) return null;
-
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[9999] bg-background flex flex-col overflow-hidden">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="absolute inset-0 z-0 pointer-events-none cinematic-gradient opacity-30" 
-        />
-        
-        {/* Header */}
-        <div className="relative z-10 flex items-center justify-between p-8 md:p-12 border-b border-white/10 glass">
-          <div className="flex items-center gap-6">
-             <button onClick={onClose} className="p-4 rounded-full glass hover:bg-white/10 transition-all">
-                <X size={28} />
-             </button>
-             <h1 className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter uppercase">{playlist ? "Edit Playlist" : "Create New Collection"}</h1>
-          </div>
-          <button 
-            onClick={() => { /* Save logic */ onClose(); }}
-            className="px-10 py-5 bg-primary text-white font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all neon-glow uppercase tracking-widest"
-          >
-            {playlist ? "SAVE CHANGES" : "CREATE NOW"}
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar p-8 md:p-16">
-          <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-[400px_1fr] gap-16">
-            {/* Left: Info */}
-            <div className="space-y-12">
-               <div className="relative group w-full aspect-square rounded-[3.5rem] overflow-hidden shadow-3xl border border-white/10 bg-white/5">
-                  <img src={formData.image} alt="Cover" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer backdrop-blur-md">
-                    <Upload size={48} className="text-white mb-4" />
-                    <span className="text-xs font-black text-white uppercase tracking-[0.3em]">Update Cover</span>
-                  </div>
-               </div>
-
-               <div className="space-y-8">
-                  <div>
-                    <label className="block text-[11px] font-black text-primary uppercase tracking-[0.3em] mb-4 ml-1">Playlist Name</label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Enter a celestial name..."
-                      className="w-full glass-card border border-white/10 rounded-[2rem] p-6 text-2xl font-black text-text-primary placeholder:text-text-secondary/20 focus:border-primary outline-none transition-all shadow-xl"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-black text-primary uppercase tracking-[0.3em] mb-4 ml-1">Description</label>
-                    <textarea
-                      value={formData.description}
-                      onChange={e => setFormData({ ...formData, description: e.target.value })}
-                      placeholder="What is the mood of this galaxy?"
-                      className="w-full glass-card border border-white/10 rounded-[2rem] p-6 text-lg font-bold text-text-primary placeholder:text-text-secondary/20 focus:border-primary outline-none h-48 resize-none transition-all shadow-xl"
-                    />
-                  </div>
-               </div>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: '100%' }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: '100%' }}
+          transition={{ type: 'spring', damping: 30, stiffness: 200 }}
+          className="fixed inset-0 z-[200] bg-background flex flex-col overflow-hidden"
+        >
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-0 pointer-events-none cinematic-gradient opacity-30" 
+          />
+          
+          {/* Header */}
+          <div className="relative z-10 flex items-center justify-between p-8 md:p-12 border-b border-white/10 glass">
+            <div className="flex items-center gap-6">
+               <button onClick={onClose} className="p-4 rounded-full glass hover:bg-white/10 transition-all">
+                  <X size={28} />
+               </button>
+               <h1 className="text-3xl md:text-5xl font-black text-text-primary tracking-tighter uppercase">{playlist ? "Edit Playlist" : "Create New Collection"}</h1>
             </div>
+            <button 
+              onClick={() => { /* Save logic */ onClose(); }}
+              className="px-10 py-5 bg-primary text-white font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all neon-glow uppercase tracking-widest"
+            >
+              {playlist ? "SAVE CHANGES" : "CREATE NOW"}
+            </button>
+          </div>
 
-            {/* Right: Song Selection */}
-            <div className="space-y-12">
-               <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                     <div className="w-1.5 h-8 bg-secondary rounded-full" />
-                     <h2 className="text-3xl font-black text-text-primary tracking-tighter uppercase">Add Cosmic Tracks</h2>
-                  </div>
-                  <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">{selectedSongs.length} Selected</span>
-               </div>
+          {/* Content */}
+          <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar p-8 md:p-16">
+            <div className="max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-[400px_1fr] gap-16">
+              {/* Left: Info */}
+              <div className="space-y-12">
+                 <div className="relative group w-full aspect-square rounded-[3.5rem] overflow-hidden shadow-3xl border border-white/10 bg-white/5">
+                    <img src={formData.image} alt="Cover" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer backdrop-blur-md">
+                      <Upload size={48} className="text-white mb-4" />
+                      <span className="text-xs font-black text-white uppercase tracking-[0.3em]">Update Cover</span>
+                    </div>
+                 </div>
 
-               <div className="glass rounded-[3rem] p-4 border border-white/10 min-h-[500px] flex flex-col">
-                  <div className="p-4 border-b border-white/5 mb-4">
-                     <div className="relative">
-                        <input 
-                           type="text" 
-                           placeholder="Search for songs to add..." 
-                           className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold text-text-primary outline-none focus:border-primary/50 transition-all"
-                        />
-                        <Shuffle size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" />
-                     </div>
-                  </div>
-                  
-                  <div className="flex-1 flex flex-col items-center justify-center text-center p-12 opacity-40">
-                     <Disc size={64} className="mb-6 animate-spin-slow" />
-                     <p className="text-xl font-black uppercase tracking-widest">Search to expand your galaxy</p>
-                  </div>
-               </div>
+                 <div className="space-y-8">
+                    <div>
+                      <label className="block text-[11px] font-black text-primary uppercase tracking-[0.3em] mb-4 ml-1">Playlist Name</label>
+                      <input
+                        type="text"
+                        value={formData.name}
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                        placeholder="Enter a celestial name..."
+                        className="w-full glass-card border border-white/10 rounded-[2rem] p-6 text-2xl font-black text-text-primary placeholder:text-text-secondary/20 focus:border-primary outline-none transition-all shadow-xl"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-black text-primary uppercase tracking-[0.3em] mb-4 ml-1">Description</label>
+                      <textarea
+                        value={formData.description}
+                        onChange={e => setFormData({ ...formData, description: e.target.value })}
+                        placeholder="What is the mood of this galaxy?"
+                        className="w-full glass-card border border-white/10 rounded-[2rem] p-6 text-lg font-bold text-text-primary placeholder:text-text-secondary/20 focus:border-primary outline-none h-48 resize-none transition-all shadow-xl"
+                      />
+                    </div>
+                 </div>
+              </div>
+
+              {/* Right: Song Selection */}
+              <div className="space-y-12">
+                 <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                       <div className="w-1.5 h-8 bg-secondary rounded-full" />
+                       <h2 className="text-3xl font-black text-text-primary tracking-tighter uppercase">Add Cosmic Tracks</h2>
+                    </div>
+                    <span className="text-[10px] font-black text-text-secondary uppercase tracking-widest">{selectedSongs.length} Selected</span>
+                 </div>
+
+                 <div className="glass rounded-[3rem] p-4 border border-white/10 min-h-[500px] flex flex-col">
+                    <div className="p-4 border-b border-white/5 mb-4">
+                       <div className="relative">
+                          <input 
+                             type="text" 
+                             placeholder="Search for songs to add..." 
+                             className="w-full bg-white/5 border border-white/5 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold text-text-primary outline-none focus:border-primary/50 transition-all"
+                          />
+                          <Shuffle size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary" />
+                       </div>
+                    </div>
+                    
+                    <div className="flex-1 flex flex-col items-center justify-center text-center p-12 opacity-40">
+                       <Disc size={64} className="mb-6 animate-spin-slow" />
+                       <p className="text-xl font-black uppercase tracking-widest">Search to expand your galaxy</p>
+                    </div>
+                 </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 };

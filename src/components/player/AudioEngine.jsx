@@ -17,48 +17,45 @@ const AudioEngine = () => {
   const { queue, currentIndex, setCurrentIndex, playNext, playPrevious } = useQueueStore();
   const audioRef = useRef(null);
 
-  // Synchronize audio source
-  useEffect(() => {
-    if (!audioRef.current || !currentTrack?.url) return;
-
-    const audio = audioRef.current;
-    
-    // Only change source if it's different
-    if (audio.src !== currentTrack.url) {
-      if (!currentTrack.url) {
-        console.error("[AudioEngine] Cannot load track: URL is empty", currentTrack);
-        return;
-      }
-      console.log(`[AudioEngine] Loading track: ${currentTrack.title}`);
-      audio.src = currentTrack.url;
-      audio.load();
-      
-      // Attempt to play if isPlaying is true
-      if (isPlaying) {
-        audio.play().catch(err => {
-          console.warn("[AudioEngine] Play failed on source change:", err.message);
-          // Auto-play might be blocked, but we don't force pause here
-        });
-      }
-    }
-  }, [currentTrack?.id, currentTrack?.url]);
-
-  // Handle Play/Pause
+  // Synchronize audio source and playback state
   useEffect(() => {
     if (!audioRef.current) return;
-    
+    const audio = audioRef.current;
+
+    // Handle source updates
+    if (currentTrack?.url) {
+      if (audio.src !== currentTrack.url) {
+        console.log(`[AudioEngine] Loading track source: ${currentTrack.title}`);
+        audio.src = currentTrack.url;
+        audio.load();
+      }
+    } else {
+      audio.src = '';
+      audio.pause();
+      setIsPlaying(false);
+      setProgress(0);
+      setDuration(0);
+      return;
+    }
+
+    // Handle play/pause state
     if (isPlaying) {
-      const playPromise = audioRef.current.play();
+      const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise.catch(error => {
-          console.warn("[AudioEngine] Play blocked or failed:", error.message);
-          setIsPlaying(false); // Sync store with actual state
+          // If play was aborted due to source swap, do NOT pause or desync isPlaying!
+          if (error.name !== 'AbortError') {
+            console.warn("[AudioEngine] Play failed:", error.message);
+            setIsPlaying(false); // Sync store with actual state
+          } else {
+            console.log("[AudioEngine] Play aborted due to track change. Keeping isPlaying=true.");
+          }
         });
       }
     } else {
-      audioRef.current.pause();
+      audio.pause();
     }
-  }, [isPlaying]);
+  }, [currentTrack?.id, currentTrack?.url, isPlaying]);
 
   // Handle Seeking
   const { seekTo, setSeekTo } = usePlayerStore();

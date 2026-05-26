@@ -142,7 +142,7 @@ const Navbar = () => {
           />
 
           <AnimatePresence>
-            {showSearchSuggestions && searchQuery && (
+            {showSearchSuggestions && searchQuery && typeof document !== 'undefined' && createPortal(
               <>
                 {/* Backdrop Overlay */}
                 <motion.div
@@ -150,107 +150,105 @@ const Navbar = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => setShowSearchSuggestions(false)}
-                  className="fixed inset-0 bg-black/20 z-[9998]"
+                  className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[99]"
                 />
 
-                {/* Suggestions Dropdown (via Portal) */}
-                {typeof document !== 'undefined' && createPortal(
-                  <motion.div
-                    data-portal-search="true"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    style={{
-                      position: 'fixed',
-                      top: `${searchDropdownPos.top + 8}px`,
-                      left: `${Math.max(16, Math.min(searchDropdownPos.left, window.innerWidth - searchDropdownPos.width - 16))}px`,
-                      width: `${Math.min(searchDropdownPos.width, window.innerWidth - 32)}px`
-                    }}
-                    className="glass rounded-3xl overflow-hidden shadow-2xl z-[9999] p-2 border border-white/10 dark:bg-black/80 bg-white/90 backdrop-blur-2xl"
-                  >
-                    {isSearching ? (
-                      <div className="p-8 text-center">
-                        <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-                      </div>
-                    ) : (searchResults.songs.length > 0 || searchResults.albums.length > 0) ? (
-                      <div className="max-h-96 overflow-y-auto no-scrollbar p-2">
-                        {searchResults.songs.slice(0, 5).map((result) => (
-                          <button
-                            key={result.id}
-                            onClick={async () => {
-                              setSearchQuery('');
-                              setShowSearchSuggestions(false);
-                              
-                              let trackToPlay = result;
-                              
-                              // If it's a global search result, it might lack the audio URL
-                              if (!trackToPlay.url && trackToPlay.id) {
-                                console.log(`[Navbar] Fetching details for ${trackToPlay.id}`);
-                                try {
-                                  const { getSongDetails } = await import('../../api/api');
-                                  const details = await getSongDetails(trackToPlay.id);
-                                  if (details && details[0]) {
-                                    trackToPlay = details[0];
-                                  }
-                                } catch (err) {
-                                  console.error(`[Navbar] Error fetching song details:`, err);
-                                }
-                              }
-
-                              // Check downloadUrl or raw backup for robustness
-                              if (!trackToPlay.url && trackToPlay.raw?.downloadUrl) {
-                                try {
-                                  const { normalizeTrack } = await import('../../api/api');
-                                  const normalized = normalizeTrack(trackToPlay.raw);
-                                  if (normalized?.url) {
-                                    trackToPlay = normalized;
-                                  }
-                                } catch (err) {
-                                  console.error(`[Navbar] Normalization error:`, err);
-                                }
-                              }
-
-                              // Play the song directly via the player store & queue store
+                {/* Suggestions Dropdown */}
+                <motion.div
+                  data-portal-search="true"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  style={{
+                    position: 'fixed',
+                    top: `${searchDropdownPos.top + 8}px`,
+                    left: `${Math.max(16, Math.min(searchDropdownPos.left, window.innerWidth - searchDropdownPos.width - 16))}px`,
+                    width: `${Math.min(searchDropdownPos.width, window.innerWidth - 32)}px`
+                  }}
+                  className="glass rounded-3xl overflow-hidden shadow-2xl z-[100] p-2 border border-white/10 dark:bg-[#0B0B12]/95 bg-white/95 backdrop-blur-xl"
+                >
+                  {isSearching ? (
+                    <div className="p-8 text-center">
+                      <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+                    </div>
+                  ) : (searchResults.songs.length > 0 || searchResults.albums.length > 0) ? (
+                    <div className="max-h-96 overflow-y-auto no-scrollbar p-2">
+                      {searchResults.songs.slice(0, 5).map((result) => (
+                        <button
+                          key={result.id}
+                          onClick={async () => {
+                            setSearchQuery('');
+                            setShowSearchSuggestions(false);
+                            
+                            let trackToPlay = result;
+                            
+                            // If it's a global search result, it might lack the audio URL
+                            if (!trackToPlay.url && trackToPlay.id) {
+                              console.log(`[Navbar] Fetching details for ${trackToPlay.id}`);
                               try {
-                                const { setQueue, addRecentlyPlayed } = useQueueStore.getState();
-                                const { setCurrentTrack, setIsPlaying } = usePlayerStore.getState();
-                                
-                                if (trackToPlay.url) {
-                                  setQueue([trackToPlay], 0);
-                                  setCurrentTrack(trackToPlay);
-                                  setIsPlaying(true);
-                                  addRecentlyPlayed(trackToPlay);
-                                } else {
-                                  console.error(`[Navbar] Cannot play song, URL still missing`, trackToPlay);
-                                  if (trackToPlay.albumId) navigate(`/album/${trackToPlay.albumId}`);
+                                const { getSongDetails } = await import('../../api/api');
+                                const details = await getSongDetails(trackToPlay.id);
+                                if (details && details[0]) {
+                                  trackToPlay = details[0];
                                 }
                               } catch (err) {
-                                console.error(`[Navbar] Playback state sync failed:`, err);
+                                console.error(`[Navbar] Error fetching song details:`, err);
                               }
-                            }}
-                            className="w-full flex items-center gap-4 p-3 hover:bg-primary/10 rounded-2xl transition-all text-left group"
-                          >
-                            <img src={result.image} alt="" className="w-10 h-10 rounded-lg object-cover shadow-lg" />
-                            <div className="flex-1 min-w-0">
-                              <p className="text-text-primary font-bold text-sm truncate group-hover:text-primary">{result.title}</p>
-                              <p className="text-text-secondary text-[11px] truncate capitalize font-medium">{result.subtitle}</p>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="p-8 text-center text-text-secondary text-sm font-bold">No cosmic matches for "{searchQuery}"</p>
-                    )}
-                    <button 
-                      onClick={() => { navigate(`/search?q=${searchQuery}`); setShowSearchSuggestions(false); }}
-                      className="w-full p-4 text-center text-primary text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition-all mt-1 border-t border-white/5"
-                    >
-                      See all results
-                    </button>
-                  </motion.div>,
-                  document.body
-                )}
-              </>
+                            }
+
+                            // Check downloadUrl or raw backup for robustness
+                            if (!trackToPlay.url && trackToPlay.raw?.downloadUrl) {
+                              try {
+                                const { normalizeTrack } = await import('../../api/api');
+                                const normalized = normalizeTrack(trackToPlay.raw);
+                                if (normalized?.url) {
+                                  trackToPlay = normalized;
+                                }
+                              } catch (err) {
+                                console.error(`[Navbar] Normalization error:`, err);
+                              }
+                            }
+
+                            // Play the song directly via the player store & queue store
+                            try {
+                              const { setQueue, addRecentlyPlayed } = useQueueStore.getState();
+                              const { setCurrentTrack, setIsPlaying } = usePlayerStore.getState();
+                              
+                              if (trackToPlay.url) {
+                                setQueue([trackToPlay], 0);
+                                setCurrentTrack(trackToPlay);
+                                setIsPlaying(true);
+                                addRecentlyPlayed(trackToPlay);
+                              } else {
+                                console.error(`[Navbar] Cannot play song, URL still missing`, trackToPlay);
+                                if (trackToPlay.albumId) navigate(`/album/${trackToPlay.albumId}`);
+                              }
+                            } catch (err) {
+                              console.error(`[Navbar] Playback state sync failed:`, err);
+                            }
+                          }}
+                          className="w-full flex items-center gap-4 p-3 hover:bg-primary/10 rounded-2xl transition-all text-left group"
+                        >
+                          <img src={result.image} alt="" className="w-10 h-10 rounded-lg object-cover shadow-lg" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-text-primary font-bold text-sm truncate group-hover:text-primary">{result.title}</p>
+                            <p className="text-text-secondary text-[11px] truncate capitalize font-medium">{result.subtitle}</p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="p-8 text-center text-text-secondary text-sm font-bold">No cosmic matches for "{searchQuery}"</p>
+                  )}
+                  <button 
+                    onClick={() => { navigate(`/search?q=${searchQuery}`); setShowSearchSuggestions(false); }}
+                    className="w-full p-4 text-center text-primary text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition-all mt-1 border-t border-white/5"
+                  >
+                    See all results
+                  </button>
+                </motion.div>
+              </>,
+              document.body
             )}
           </AnimatePresence>
         </div>
@@ -293,7 +291,7 @@ const Navbar = () => {
           </button>
           
           <AnimatePresence>
-            {showNotifications && (
+            {showNotifications && typeof document !== 'undefined' && createPortal(
               <>
                 {/* Backdrop Overlay */}
                 <motion.div
@@ -301,66 +299,64 @@ const Navbar = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => setShowNotifications(false)}
-                  className="fixed inset-0 bg-black/20 z-[9998]"
+                  className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[99]"
                 />
                 
-                {/* Notifications Dropdown (via Portal) */}
-                {typeof document !== 'undefined' && createPortal(
-                  <motion.div
-                    data-portal-notifications="true"
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="fixed top-24 right-6 md:right-10 mt-2 w-[calc(100vw-3rem)] sm:w-96 glass rounded-[2.5rem] overflow-hidden shadow-2xl z-[9999] border border-white/10 dark:bg-black/75 bg-white/85 backdrop-blur-2xl"
-                  >
-                    <div className="p-6 border-b border-white/10 flex items-center justify-between bg-white/5">
-                      <h3 className="font-black text-text-primary uppercase tracking-widest text-[11px]">Notifications</h3>
-                      {notifications.length > 0 && (
-                        <button 
-                          onClick={() => setNotifications([])}
-                          className="text-[10px] text-primary hover:text-primary/80 uppercase font-black transition-colors px-3 py-1 bg-primary/10 rounded-full"
-                        >
-                          Clear all
-                        </button>
-                      )}
-                    </div>
-                    
-                    <div className="max-h-[350px] overflow-y-auto no-scrollbar p-2">
-                      {notifications.length > 0 ? (
-                        <div className="space-y-1">
-                          {notifications.map((n) => (
-                            <div 
-                              key={n.id}
-                              onClick={() => {
-                                // Mark as read
-                                setNotifications(prev => prev.map(item => item.id === n.id ? { ...item, read: true } : item));
-                              }}
-                              className={`p-4 rounded-2xl transition-all cursor-pointer text-left flex items-start gap-4 hover:bg-primary/5 ${!n.read ? 'bg-primary/5 border border-primary/20' : 'border border-transparent'}`}
-                            >
-                              <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${!n.read ? 'bg-primary animate-pulse' : 'bg-transparent'}`} />
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between gap-2">
-                                  <span className="font-bold text-xs text-text-primary truncate">{n.title}</span>
-                                  <span className="text-[9px] text-text-secondary whitespace-nowrap">{n.time}</span>
-                                </div>
-                                <p className="text-[11px] text-text-secondary mt-1 leading-normal break-words">{n.message}</p>
+                {/* Notifications Dropdown */}
+                <motion.div
+                  data-portal-notifications="true"
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="fixed top-24 right-6 md:right-10 mt-2 w-[calc(100vw-3rem)] sm:w-96 glass rounded-[2.5rem] overflow-hidden shadow-2xl z-[100] border border-white/10 dark:bg-[#0B0B12]/95 bg-white/95 backdrop-blur-xl"
+                >
+                  <div className="p-6 border-b border-white/10 flex items-center justify-between bg-white/5">
+                    <h3 className="font-black text-text-primary uppercase tracking-widest text-[11px]">Notifications</h3>
+                    {notifications.length > 0 && (
+                      <button 
+                        onClick={() => setNotifications([])}
+                        className="text-[10px] text-primary hover:text-primary/80 uppercase font-black transition-colors px-3 py-1 bg-primary/10 rounded-full"
+                      >
+                        Clear all
+                      </button>
+                    )}
+                  </div>
+                  
+                  <div className="max-h-[350px] overflow-y-auto no-scrollbar p-2">
+                    {notifications.length > 0 ? (
+                      <div className="space-y-1">
+                        {notifications.map((n) => (
+                          <div 
+                            key={n.id}
+                            onClick={() => {
+                              // Mark as read
+                              setNotifications(prev => prev.map(item => item.id === n.id ? { ...item, read: true } : item));
+                            }}
+                            className={`p-4 rounded-2xl transition-all cursor-pointer text-left flex items-start gap-4 hover:bg-primary/5 ${!n.read ? 'bg-primary/5 border border-primary/20' : 'border border-transparent'}`}
+                          >
+                            <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${!n.read ? 'bg-primary animate-pulse' : 'bg-transparent'}`} />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2">
+                                <span className="font-bold text-xs text-text-primary truncate">{n.title}</span>
+                                <span className="text-[9px] text-text-secondary whitespace-nowrap">{n.time}</span>
                               </div>
+                              <p className="text-[11px] text-text-secondary mt-1 leading-normal break-words">{n.message}</p>
                             </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="py-16 text-center">
-                          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner border border-white/5">
-                            <Bell size={28} className="text-text-secondary/20" />
                           </div>
-                          <p className="text-text-secondary text-xs font-black uppercase tracking-[0.2em] opacity-50">No new alerts</p>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="py-16 text-center">
+                        <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner border border-white/5">
+                          <Bell size={28} className="text-text-secondary/20" />
                         </div>
-                      )}
-                    </div>
-                  </motion.div>,
-                  document.body
-                )}
-              </>
+                        <p className="text-text-secondary text-xs font-black uppercase tracking-[0.2em] opacity-50">No new alerts</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </>,
+              document.body
             )}
           </AnimatePresence>
         </div>
@@ -386,7 +382,7 @@ const Navbar = () => {
           </button>
 
           <AnimatePresence>
-            {showProfile && (
+            {showProfile && typeof document !== 'undefined' && createPortal(
               <>
                 {/* Backdrop Overlay */}
                 <motion.div
@@ -394,39 +390,37 @@ const Navbar = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   onClick={() => setShowProfile(false)}
-                  className="fixed inset-0 bg-black/20 z-[9998]"
+                  className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[99]"
                 />
                 
-                {/* Profile Dropdown (via Portal) */}
-                {typeof document !== 'undefined' && createPortal(
-                  <motion.div
-                    data-portal-profile="true"
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="fixed top-24 right-6 md:right-10 mt-2 w-[calc(100vw-3rem)] sm:w-64 glass rounded-3xl overflow-hidden shadow-2xl z-[9999] border border-white/10 dark:bg-black/75 bg-white/85 backdrop-blur-2xl p-2"
-                  >
-                    <div className="p-6 text-center border-b border-white/5 bg-white/5 rounded-2xl mb-2">
-                      <div className="w-20 h-20 rounded-full mx-auto mb-4 bg-gradient-to-tr from-primary to-accent p-1 shadow-2xl">
-                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" alt="" className="w-full h-full object-cover rounded-full border-2 border-white/10" />
-                      </div>
-                      <h4 className="text-text-primary font-black text-lg truncate tracking-tight">Explorer</h4>
-                      <p className="text-text-secondary text-[10px] font-black uppercase tracking-[0.2em] mt-1">Free Member</p>
+                {/* Profile Dropdown */}
+                <motion.div
+                  data-portal-profile="true"
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="fixed top-24 right-6 md:right-10 mt-2 w-[calc(100vw-3rem)] sm:w-64 glass rounded-3xl overflow-hidden shadow-2xl z-[100] border border-white/10 dark:bg-[#0B0B12]/95 bg-white/95 backdrop-blur-xl p-2"
+                >
+                  <div className="p-6 text-center border-b border-white/5 bg-white/5 rounded-2xl mb-2">
+                    <div className="w-20 h-20 rounded-full mx-auto mb-4 bg-gradient-to-tr from-primary to-accent p-1 shadow-2xl">
+                      <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" alt="" className="w-full h-full object-cover rounded-full border-2 border-white/10" />
                     </div>
-                    <div className="space-y-1">
-                      <button onClick={() => { navigate('/profile'); setShowProfile(false); }} className="w-full flex items-center gap-3 p-3 hover:bg-primary/10 rounded-2xl transition-all text-left text-sm font-bold text-text-primary group">
-                        <User size={18} className="text-primary group-hover:scale-110 transition-transform" />
-                        <span>My Profile</span>
-                      </button>
-                      <button onClick={() => { navigate('/favorites'); setShowProfile(false); }} className="w-full flex items-center gap-3 p-3 hover:bg-primary/10 rounded-2xl transition-all text-left text-sm font-bold text-text-primary group">
-                        <Heart size={18} className="text-secondary group-hover:scale-110 transition-transform" />
-                        <span>Favorites</span>
-                      </button>
-                    </div>
-                  </motion.div>,
-                  document.body
-                )}
-              </>
+                    <h4 className="text-text-primary font-black text-lg truncate tracking-tight">Explorer</h4>
+                    <p className="text-text-secondary text-[10px] font-black uppercase tracking-[0.2em] mt-1">Free Member</p>
+                  </div>
+                  <div className="space-y-1">
+                    <button onClick={() => { navigate('/profile'); setShowProfile(false); }} className="w-full flex items-center gap-3 p-3 hover:bg-primary/10 rounded-2xl transition-all text-left text-sm font-bold text-text-primary group">
+                      <User size={18} className="text-primary group-hover:scale-110 transition-transform" />
+                      <span>My Profile</span>
+                    </button>
+                    <button onClick={() => { navigate('/favorites'); setShowProfile(false); }} className="w-full flex items-center gap-3 p-3 hover:bg-primary/10 rounded-2xl transition-all text-left text-sm font-bold text-text-primary group">
+                      <Heart size={18} className="text-secondary group-hover:scale-110 transition-transform" />
+                      <span>Favorites</span>
+                    </button>
+                  </div>
+                </motion.div>
+              </>,
+              document.body
             )}
           </AnimatePresence>
         </div>

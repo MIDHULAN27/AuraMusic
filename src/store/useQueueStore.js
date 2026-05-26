@@ -44,11 +44,16 @@ export const useQueueStore = create(
         const { queue, currentIndex, setCurrentIndex } = get();
         if (!queue || queue.length === 0) return;
         
-        const { repeatMode, isShuffled, setCurrentTrack, setIsPlaying } = usePlayerStore.getState();
+        const { currentTrack, repeatMode, isShuffled, setCurrentTrack, setIsPlaying } = usePlayerStore.getState();
         
-        let nextIndex = currentIndex;
+        let activeIndex = currentIndex;
+        if (activeIndex === -1 && currentTrack) {
+          activeIndex = queue.findIndex(t => String(t.id) === String(currentTrack.id));
+        }
+
+        let nextIndex = activeIndex;
         
-        if (repeatMode === 'one' && currentIndex >= 0) {
+        if (repeatMode === 'one' && activeIndex >= 0) {
           const audio = document.querySelector('audio');
           if (audio) {
             audio.currentTime = 0;
@@ -61,8 +66,8 @@ export const useQueueStore = create(
         if (isShuffled) {
           nextIndex = Math.floor(Math.random() * queue.length);
         } else {
-          if (currentIndex < queue.length - 1) {
-            nextIndex = currentIndex + 1;
+          if (activeIndex < queue.length - 1) {
+            nextIndex = activeIndex + 1;
           } else if (repeatMode === 'all') {
             nextIndex = 0;
           } else {
@@ -82,7 +87,7 @@ export const useQueueStore = create(
         const { queue, currentIndex, setCurrentIndex } = get();
         if (!queue || queue.length === 0) return;
         
-        const { repeatMode, setCurrentTrack, setIsPlaying, progress, setProgress } = usePlayerStore.getState();
+        const { currentTrack, repeatMode, setCurrentTrack, setIsPlaying, progress, setProgress } = usePlayerStore.getState();
         
         if (progress > 3) {
           const audio = document.querySelector('audio');
@@ -93,10 +98,15 @@ export const useQueueStore = create(
           return;
         }
         
-        let prevIndex = currentIndex;
+        let activeIndex = currentIndex;
+        if (activeIndex === -1 && currentTrack) {
+          activeIndex = queue.findIndex(t => String(t.id) === String(currentTrack.id));
+        }
+
+        let prevIndex = activeIndex;
         
-        if (currentIndex > 0) {
-          prevIndex = currentIndex - 1;
+        if (activeIndex > 0) {
+          prevIndex = activeIndex - 1;
         } else if (repeatMode === 'all') {
           prevIndex = queue.length - 1;
         } else {
