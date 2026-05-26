@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { usePlayerStore } from './usePlayerStore';
 
 export const useQueueStore = create(
   persist(
@@ -27,10 +28,6 @@ export const useQueueStore = create(
       
       removeFromQueue: (trackId) => set((state) => {
         const newQueue = state.queue.filter(t => t.id !== trackId);
-        let newIndex = state.currentIndex;
-        if (state.queue[state.currentIndex]?.id === trackId) {
-          // If removing currently playing, handle index
-        }
         return { queue: newQueue };
       }),
       
@@ -42,6 +39,81 @@ export const useQueueStore = create(
       }),
       
       clearQueue: () => set({ queue: [], currentIndex: -1 }),
+
+      playNext: () => {
+        const { queue, currentIndex, setCurrentIndex } = get();
+        if (!queue || queue.length === 0) return;
+        
+        const { repeatMode, isShuffled, setCurrentTrack, setIsPlaying } = usePlayerStore.getState();
+        
+        let nextIndex = currentIndex;
+        
+        if (repeatMode === 'one' && currentIndex >= 0) {
+          const audio = document.querySelector('audio');
+          if (audio) {
+            audio.currentTime = 0;
+            audio.play().catch(() => {});
+          }
+          setIsPlaying(true);
+          return;
+        }
+        
+        if (isShuffled) {
+          nextIndex = Math.floor(Math.random() * queue.length);
+        } else {
+          if (currentIndex < queue.length - 1) {
+            nextIndex = currentIndex + 1;
+          } else if (repeatMode === 'all') {
+            nextIndex = 0;
+          } else {
+            setIsPlaying(false);
+            return;
+          }
+        }
+        
+        if (nextIndex >= 0 && nextIndex < queue.length) {
+          setCurrentIndex(nextIndex);
+          setCurrentTrack(queue[nextIndex]);
+          setIsPlaying(true);
+        }
+      },
+      
+      playPrevious: () => {
+        const { queue, currentIndex, setCurrentIndex } = get();
+        if (!queue || queue.length === 0) return;
+        
+        const { repeatMode, setCurrentTrack, setIsPlaying, progress, setProgress } = usePlayerStore.getState();
+        
+        if (progress > 3) {
+          const audio = document.querySelector('audio');
+          if (audio) {
+            audio.currentTime = 0;
+          }
+          setProgress(0);
+          return;
+        }
+        
+        let prevIndex = currentIndex;
+        
+        if (currentIndex > 0) {
+          prevIndex = currentIndex - 1;
+        } else if (repeatMode === 'all') {
+          prevIndex = queue.length - 1;
+        } else {
+          const audio = document.querySelector('audio');
+          if (audio) {
+            audio.currentTime = 0;
+          }
+          setProgress(0);
+          return;
+        }
+        
+        if (prevIndex >= 0 && prevIndex < queue.length) {
+          setCurrentIndex(prevIndex);
+          setCurrentTrack(queue[prevIndex]);
+          setIsPlaying(true);
+        }
+      },
     }),
     {
       name: 'aura-queue-storage',

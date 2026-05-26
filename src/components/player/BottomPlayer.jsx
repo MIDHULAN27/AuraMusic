@@ -46,7 +46,7 @@ const BottomPlayer = () => {
     setProgress
   } = usePlayerStore();
   
-  const { queue, currentIndex, setCurrentIndex, addToQueue } = useQueueStore();
+  const { queue, currentIndex, setCurrentIndex, addToQueue, playNext, playPrevious } = useQueueStore();
   const { favorites, toggleFavorite } = useFavoritesStore();
   
   const [isQueueOpen, setIsQueueOpen] = useState(false);
@@ -92,29 +92,7 @@ const BottomPlayer = () => {
     }
   };
 
-  const playNext = () => {
-    if (currentIndex < queue.length - 1) {
-      const nextIndex = currentIndex + 1;
-      setCurrentIndex(nextIndex);
-      setCurrentTrack(queue[nextIndex]);
-    } else if (repeatMode === 'all' && queue.length > 0) {
-      setCurrentIndex(0);
-      setCurrentTrack(queue[0]);
-    }
-  };
 
-  const playPrevious = () => {
-    if (progress > 5) {
-      const audio = document.querySelector('audio');
-      if (audio) audio.currentTime = 0;
-      return;
-    }
-    if (currentIndex > 0) {
-      const prevIndex = currentIndex - 1;
-      setCurrentIndex(prevIndex);
-      setCurrentTrack(queue[prevIndex]);
-    }
-  };
 
   const toggleRepeat = () => {
     const modes = ['none', 'all', 'one'];
@@ -135,7 +113,12 @@ const BottomPlayer = () => {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-4 lg:bottom-8 left-4 lg:left-[304px] right-4 lg:right-8 h-20 lg:h-24 glass rounded-2xl lg:rounded-[2.5rem] border border-white/10 px-4 lg:px-8 flex items-center justify-between z-50 shadow-[0_30px_60px_rgba(0,0,0,0.8)]"
+            onClick={(e) => {
+              if (!e.target.closest('button') && !e.target.closest('input') && !e.target.closest('a')) {
+                setShowFullscreen(true);
+              }
+            }}
+            className="fixed bottom-4 lg:bottom-8 left-4 lg:left-[304px] right-4 lg:right-8 h-20 lg:h-24 glass rounded-2xl lg:rounded-[2.5rem] border border-white/10 px-4 lg:px-8 flex items-center justify-between z-50 shadow-[0_30px_60px_rgba(0,0,0,0.8)] cursor-pointer"
           >
             {/* Progress Bar */}
             <div 
@@ -254,7 +237,7 @@ const BottomPlayer = () => {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            className="fixed inset-0 z-[9999] bg-background flex flex-col p-6 md:p-12 overflow-hidden"
+            className="fixed inset-0 z-[9999] bg-background flex flex-col p-4 sm:p-6 md:p-12 overflow-hidden"
           >
             {/* Background Ambient */}
             <div 
@@ -302,27 +285,27 @@ const BottomPlayer = () => {
             </div>
 
             {/* Main Grid */}
-            <div className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center max-w-7xl mx-auto w-full overflow-hidden">
+            <div className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 items-center max-w-7xl mx-auto w-full overflow-y-auto lg:overflow-hidden no-scrollbar pb-10 lg:pb-0">
                {/* Left: Art */}
-               <div className="flex flex-col items-center justify-center h-full">
+               <div className="flex flex-col items-center justify-center h-full py-4 lg:py-0">
                   <motion.div 
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="w-64 h-64 md:w-[380px] md:h-[380px] rounded-[3.5rem] overflow-hidden shadow-3xl border border-white/10 mb-8 group"
+                    className="w-48 h-48 sm:w-64 sm:h-64 md:w-[320px] md:h-[320px] lg:w-[380px] lg:h-[380px] rounded-3xl sm:rounded-[3.5rem] overflow-hidden shadow-3xl border border-white/10 mb-6 lg:mb-8 group"
                   >
                      <img src={currentTrack.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="" />
                   </motion.div>
                   
                   <div className="w-full text-center px-4 max-w-xl">
-                     <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-text-primary mb-3 tracking-tighter leading-tight line-clamp-2">{currentTrack.title}</h2>
-                     <p className="text-lg md:text-xl text-primary font-bold opacity-80">{currentTrack.subtitle}</p>
+                     <h2 className="text-xl sm:text-3xl md:text-5xl lg:text-6xl font-black text-text-primary mb-2 lg:mb-3 tracking-tighter leading-tight line-clamp-2">{currentTrack.title}</h2>
+                     <p className="text-sm sm:text-lg md:text-xl text-primary font-bold opacity-80">{currentTrack.subtitle}</p>
                   </div>
                </div>
 
                {/* Right: Lyrics & Controls */}
-               <div className="flex flex-col gap-8 md:gap-10 h-full justify-center">
+               <div className="flex flex-col gap-6 lg:gap-10 h-full justify-center w-full max-w-xl lg:max-w-none mx-auto py-4 lg:py-0">
                   {/* Lyrics Section */}
-                  <div className="glass rounded-[2.5rem] p-8 h-48 md:h-72 lg:h-96 border border-white/10 overflow-y-auto no-scrollbar mask-fade-y text-center relative">
+                  <div className="glass rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-8 h-40 sm:h-56 md:h-72 lg:h-96 border border-white/10 overflow-y-auto no-scrollbar mask-fade-y text-center relative">
                      <div className="space-y-4 md:space-y-6 flex flex-col justify-center min-h-full">
                         {isLoadingLyrics ? (
                            <>

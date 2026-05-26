@@ -14,7 +14,7 @@ const AudioEngine = () => {
     setCurrentTrack
   } = usePlayerStore();
   
-  const { queue, currentIndex, setCurrentIndex } = useQueueStore();
+  const { queue, currentIndex, setCurrentIndex, playNext, playPrevious } = useQueueStore();
   const audioRef = useRef(null);
 
   // Synchronize audio source
@@ -89,20 +89,7 @@ const AudioEngine = () => {
     }
   };
 
-  const playNext = () => {
-    if (currentIndex < queue.length - 1) {
-      const nextIndex = currentIndex + 1;
-      setCurrentIndex(nextIndex);
-      setCurrentTrack(queue[nextIndex]);
-      setIsPlaying(true);
-    } else if (repeatMode === 'all' && queue.length > 0) {
-      setCurrentIndex(0);
-      setCurrentTrack(queue[0]);
-      setIsPlaying(true);
-    } else {
-      setIsPlaying(false);
-    }
-  };
+
 
   const onEnded = () => {
     if (repeatMode === 'one') {
@@ -153,17 +140,7 @@ const AudioEngine = () => {
           if (e.shiftKey) playNext();
           break;
         case 'KeyP':
-          if (e.shiftKey) {
-            // Simple prev logic
-            if (audioRef.current.currentTime > 5) {
-              audioRef.current.currentTime = 0;
-            } else if (currentIndex > 0) {
-              const prevIndex = currentIndex - 1;
-              setCurrentIndex(prevIndex);
-              setCurrentTrack(queue[prevIndex]);
-              setIsPlaying(true);
-            }
-          }
+          if (e.shiftKey) playPrevious();
           break;
         default:
           break;
@@ -172,7 +149,7 @@ const AudioEngine = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPlaying, currentIndex, queue, setCurrentIndex, setCurrentTrack, setIsPlaying]);
+  }, [isPlaying, currentIndex, queue, setCurrentIndex, setCurrentTrack, setIsPlaying, playNext, playPrevious]);
 
   return (
     <audio

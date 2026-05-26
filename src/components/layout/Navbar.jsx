@@ -126,7 +126,7 @@ const Navbar = () => {
         </motion.h1>
         
         {/* Search input */}
-        <div ref={searchRef} className="relative max-w-md w-full ml-0 md:ml-4 group">
+        <div ref={searchRef} className="relative max-w-md w-full ml-0 md:ml-4 group hidden md:block">
           <div className="absolute inset-0 bg-primary/10 rounded-full blur-md opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary group-focus-within:text-primary transition-colors z-10" size={20} />
           <input
@@ -163,8 +163,8 @@ const Navbar = () => {
                     style={{
                       position: 'fixed',
                       top: `${searchDropdownPos.top + 8}px`,
-                      left: `${searchDropdownPos.left}px`,
-                      width: `${searchDropdownPos.width}px`
+                      left: `${Math.max(16, Math.min(searchDropdownPos.left, window.innerWidth - searchDropdownPos.width - 16))}px`,
+                      width: `${Math.min(searchDropdownPos.width, window.innerWidth - 32)}px`
                     }}
                     className="glass rounded-3xl overflow-hidden shadow-2xl z-[9999] p-2 border border-white/10 dark:bg-black/80 bg-white/90 backdrop-blur-2xl"
                   >
